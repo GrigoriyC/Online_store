@@ -1,5 +1,5 @@
  
-from django.shortcuts import render, get_object_or_404 
+from django.shortcuts import render, get_object_or_404, redirect
 
 from store.models import Products
 
@@ -17,3 +17,13 @@ def get_product_list(request):
 def get_product_detail(request, product_id):
   # return render(request, 'store/product_detail.html', {"product": Products.objects.get(id=product_id)})
   return render(request, 'store/product_detail.html', {"product": get_object_or_404(Products, id=product_id)})
+
+
+def create_product(request):
+  if request.method == "GET":
+    return render(request, 'store/product_add.html')
+  
+  if request.method == "POST":
+    product = Products.objects.create(product_name=request.POST.get('title'), about_item=request.POST.get('text'))
+
+    return redirect('product_detail', product_id=product.id)
